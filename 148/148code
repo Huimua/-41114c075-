@@ -1,0 +1,50 @@
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        // Base case: if list is empty or has only one node
+        if (!head || !head->next) return head;
+
+        //  Split the list into two halves
+        ListNode* mid = getMid(head);
+        ListNode* left = head;
+        ListNode* right = mid->next;
+        mid->next = nullptr; // Break the link
+
+        // Recursively sort each half
+        left = sortList(left);
+        right = sortList(right);
+
+        // 3. Merge the sorted halves
+        return merge(left, right);
+    }
+
+private:
+    ListNode* getMid(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head->next; // Start fast ahead to get the left-mid
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow;
+    }
+
+    ListNode* merge(ListNode* l1, ListNode* l2) {
+        ListNode dummy(0);
+        ListNode* curr = &dummy;
+
+        while (l1 && l2) {
+            if (l1->val < l2->val) {
+                curr->next = l1;
+                l1 = l1->next;
+            } else {
+                curr->next = l2;
+                l2 = l2->next;
+            }
+            curr = curr->next;
+        }
+        // Attach remaining nodes
+        curr->next = l1 ? l1 : l2;
+        return dummy.next;
+    }
+};
