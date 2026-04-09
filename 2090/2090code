@@ -1,0 +1,24 @@
+class Solution {
+public:
+    vector<int> getAverages(vector<int>& nums, int k) {
+        int n = nums.size();
+        long long windowSize = 2LL * k + 1;
+        vector<int> avgs(n, -1);
+        
+        if (windowSize > n) return avgs;
+        
+        long long windowSum = 0;
+        for (int i = 0; i < windowSize; i++) {
+            windowSum += nums[i];
+        }
+        
+        avgs[k] = windowSum / windowSize;
+        
+        for (int i = k + 1; i <= n - k - 1; i++) {
+            windowSum = windowSum + nums[i + k] - nums[i - k - 1];
+            avgs[i] = windowSum / windowSize;
+        }
+        
+        return avgs;
+    }
+};
