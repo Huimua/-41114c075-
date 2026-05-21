@@ -1,0 +1,42 @@
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        vector<vector<int>> graph(n + 1);
+        for (const auto& edge : dislikes) {
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+        }
+        
+        vector<int> colors(n + 1, 0);
+        
+        for (int i = 1; i <= n; ++i) {
+            if (colors[i] == 0) {
+                colors[i] = 1;
+                queue<int> q;
+                q.push(i);
+                
+                while (!q.empty()) {
+                    int curr = q.front();
+                    q.pop();
+                    
+                    for (int neighbor : graph[curr]) {
+                        if (colors[neighbor] == colors[curr]) {
+                            return false;
+                        }
+                        if (colors[neighbor] == 0) {
+                            colors[neighbor] = -colors[curr];
+                            q.push(neighbor);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
+};
